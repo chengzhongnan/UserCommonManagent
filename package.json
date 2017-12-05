@@ -1,0 +1,27 @@
+{
+    "name": "UCMService",
+    "version": "1.0.0",
+    "description": "通用用户数据管理系统",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js"
+    },
+    "author": "chengzhongnan",
+    "license": "ISC",
+    "dependencies": {
+        "async-busboy": "^0.6.1",
+        "babel-eslint": "^7.2.3",
+        "bluebird": "^3.5.0",
+        "eslint": "^4.3.0",
+        "koa": "^2.3.0",
+        "koa-bodyparser": "*",
+        "koa-router": "^7.2.1",
+        "koa-session-mongo": "*",
+        "koa-session-store": "*",
+        "koa-session2": "*",
+        "koa-static": "^3.0.0",
+        "mongodb": "^2.2.30",
+        "mongoose": "*",
+        "xml2js" : "*"
+    }
+}
