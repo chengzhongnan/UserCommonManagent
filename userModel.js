@@ -15,6 +15,8 @@ const UserModelSchema = new Schema({
     token: String,              // 登陆成功后的Token信息，生成后在第二天失效
     thirdToken: String,         // 第三方登陆Token，服务器在拿到客户端的第三方Token后，会到第三方服务器验证，验证成功生成本地Token
     money: Number,              // 用户拥有的货币
+    createRoom : [Number],      // 用户创建的房间id
+    joinRoom : [Number],        // 用户参与的房间id
 });
 
 const UserModel = mongoose.model('user', UserModelSchema, 'user');

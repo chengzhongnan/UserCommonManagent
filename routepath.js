@@ -58,31 +58,45 @@ module.exports = {
             token : { type : Number },      // 登陆状态
         },
         returns : {
-
+            state : { type : Number },
         }
     },
     CreateRoom : {                          // 创建一个房间
         path : '/user/room/create',
         parameters : {
-
+            token : { type : Number },      // 登陆状态
+            ballgameid : { type : Number }, // 比赛id
         },
         returns : {
-
+            state : { type : Number},
+            roomid : { type : Number},      // 房间id
+            createtime : {type : String},   // 创建时间
+            ballgameid : {type : Number},   // 比赛id
+            starttime : {type : String},    // 开始时间
         }
     },
     GetParticipateRoom : {                  // 取得参与的房间
         path : '/user/participate/room',
         parameters : {
-
+            token : { type : Number },      // 登陆状态
         },
         returns : {
 
         }
     },
-    GetMacauslotBallGameList : {
+    GetMacauslotBallGameList : {            // 取得球赛列表
         path : '/user/macauslot/gamelist',
         parameters : {
             token : {type : String}
+        },
+        returns : {
+
+        }
+    },
+    AddRoom : {
+        path : '/user/addroom',             // 加入房间
+        parameters : {
+
         },
         returns : {
 

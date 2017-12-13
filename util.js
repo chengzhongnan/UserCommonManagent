@@ -3,6 +3,8 @@
 const https = require('https');
 const http = require('http');
 const querystring = require('querystring');
+const xml2js = require('xml2js');
+const xmlParser = new xml2js.Parser( { explicitArray : false, ignoreAttrs : false });
 
 module.exports = {
     httpget : async (host, port, path, data) => {
@@ -16,17 +18,25 @@ module.exports = {
             };
             let req; 
             if(port == 443) {
-                req = https.request(options, function (res) {    
+                req = https.request(options, function (res) {
+                    let data = '';    
                     res.setEncoding('utf8');    
                     res.on('data', function (chunk) {    
-                        resolve(chunk);    
+                        data += chunk;    
                     });    
+                    res.on('end', () => {
+                        resolve(data);
+                    });
                 });
             } else {
                 req = http.request(options, function (res) {    
+                    let data = '';    
                     res.setEncoding('utf8');    
                     res.on('data', function (chunk) {    
-                        resolve(chunk);    
+                        data += chunk;    
+                    });    
+                    res.on('end', () => {
+                        resolve(data);
                     });    
                 });
             }    
@@ -36,6 +46,17 @@ module.exports = {
             });    
                 
             req.end();  
+        });
+    },
+    parseXML : async (xmlText) => {
+        return new Promise((resolve, reject) => {
+            xmlParser.parseString(xmlText, (err, result) => {
+                if(err) {
+                    reject(null);
+                    return;
+                }
+                resolve(result);
+            });
         });
     }
 };
