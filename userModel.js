@@ -17,6 +17,14 @@ const UserModelSchema = new Schema({
     money: Number,              // 用户拥有的货币
     createRoom : [Number],      // 用户创建的房间id
     joinRoom : [Number],        // 用户参与的房间id
+    nickname : String,          // 昵称
+    joinRecord : [{             // 参与竞猜记录列表
+        date : Date,            // 参与时间
+        roomid : Number,        // 房间id
+        team : String,          // 竞猜队伍
+        score : Number,         // 竞猜分数
+        gametime : String,      // 球赛开启时间
+    }]
 });
 
 const UserModel = mongoose.model('user', UserModelSchema, 'user');
@@ -27,6 +35,7 @@ UserModel.findOnePromise = (cb) => {
             if(err) {
               reject(undefined);
             } else {
+                res[0].ObjectID = res[0]._id;
                 resolve(res[0]);
             }
         });
@@ -69,22 +78,75 @@ UserModel.findByToken = (token) => {
     // });
 };
 
-UserModel.createNewUser = async (username, passwd) => {
+UserModel.updateToken = (id, newToken) => {
+    return new Promise((resolve, reject) => {
+        UserModel.findByIdAndUpdate(id, {
+            token : newToken   
+        }, (err, result) => {
+            if(err) {
+                reject(err);
+            } else {
+                resolve(result);
+            }
+        })
+    });
+}
+
+UserModel.updateThirdToken = (id, newToken) => {
+    return new Promise((resolve, reject) => {
+        UserModel.findByIdAndUpdate(id, {
+            token : newToken   
+        }, (err, result) => {
+            if(err) {
+                reject(err);
+            } else {
+                resolve(result);
+            }
+        })
+    });
+}
+
+UserModel.createNewUser = async (username, passwd, nickname) => {
     let result = {state : ErrCode.Success, newUser : null };
     const findUser = await UserModel.findOnePromise({username : username});
     if (findUser != null) {
         result.state = ErrCode.UserNameRepeated;
         return result;
     }
-    const newUser = new UserModelSchema({username : username, passwd : passwd});
+    const newUser = new UserModel({
+        username : username, 
+        passwd : passwd, 
+        nickname : nickname,
+        money : 100,
+    });
     const createResult = await UserModel.insertMany(newUser);
     if (createResult == null) {
         result.state = ErrCode.DatabaseError;
         return result;
     }
 
-    result.newUser = createResult;
+    result.newUser = createResult[0];
     return result;
+};
+
+UserModel.addJoinRoomRecord = async (userid, roomid, team, score, gamestarttime) => {
+    return new Promise((resolve, reject) => {
+        UserModel.findByIdAndUpdate(userid, {
+            $push : {joinRecord : {
+                date : new Date(),      // 参与时间
+                roomid : roomid,        // 房间id
+                team : team,            // 竞猜队伍
+                score : score,          // 竞猜分数
+                gametime : gametime,    // 球赛时间
+            }}
+        }, function(err, result) {
+            if(err) {
+                reject(err);
+            } else {
+                resolve(result[0]);
+            }
+        } )
+    });
 };
 
 module.exports = UserModel;

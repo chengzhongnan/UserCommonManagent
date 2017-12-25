@@ -16,14 +16,23 @@ const RoomModelSchema = new Schema({
     createUserId :Schema.Types.ObjectId,// 创建者Id 
     gameid : Number,                    // 游戏id
     gameStartTime: Date,                // 游戏开始时间
-    joinUser: [Schema.Types.ObjectId],  // 参与的玩家ObjectID
+    roomMaxIndex: {                     // 最大房间索引
+        type: Number,
+        default : 10000,    
+    },               
+    joinUser: [{
+        userid : Schema.Types.ObjectId, // 用户id
+        username : String,              // 下注用户的用户名
+        teamid : String,                // 下注的队伍id
+        score : Number,                 // 下注的分数
+    }],  // 参与的玩家ObjectID
 });
 
 const RoomModel = mongoose.model('room', RoomModelSchema, 'room');
 
 RoomModel.findOnePromise = (cb) => {
     return new Promise((resolve, reject) => {
-        UserModel.find(cb, (err, res) => {
+        RoomModel.find(cb, (err, res) => {
             if(err) {
               reject(undefined);
             } else {
@@ -41,14 +50,26 @@ RoomModel.findByRoomID = (roomid) => {
 
 RoomModel.incrementRoomId = () => {
     return new Promise((resolve, reject) => {
-        Sequence.increment('room',function (err, result) {
+        RoomModel.findOneAndUpdate({
+            roomid : 0
+        },{
+            $inc : {roomMaxIndex : 1} 
+        },async (err, result) => {
             if (err) 
             {
                 reject(0);
             }
             else
             {
-                resolve(result.value.next);
+                if(result == null) {
+                    let startRoomIndex = 10000;
+                    
+                    let indexModel = new RoomModel({roomid : 0, roomMaxIndex : startRoomIndex});
+                    await RoomModel.insertMany(indexModel);
+                    resolve(startRoomIndex);
+                } else {
+                    resolve(result.roomMaxIndex + 1);
+                }
             }
         });
     });
@@ -63,11 +84,13 @@ RoomModel.createRoom = async (gameinfo, userInfo) => {
     const newRoomId = await RoomModel.incrementRoomId();
     let model = new RoomModel({
         roomid : newRoomId,
+        id : newRoomId,
         createtime : new Date(),
         createUserName : userInfo.username,
         createUserId : userInfo.id,
         gameid : gameinfo.id,
-        gameStartTime : starttime,
+        gameStartTime : gameinfo.gt,
+        joinUser : []
     });
 
     const createResult = await RoomModel.insertMany(model);
@@ -76,8 +99,32 @@ RoomModel.createRoom = async (gameinfo, userInfo) => {
         return result;
     }
 
-    result.newRoom = createResult;
+    result.newRoom = createResult[0];
     return result;
 };
+
+RoomModel.getRoomInfo = (roomid) => {
+    return RoomModel.findByRoomID(roomid);
+};
+
+// 玩家加入房间竞猜列表
+RoomModel.AddJoinUser = async (roomid, userInfo, score, teamid) => {
+    return new Promise((resolve, reject) => {
+        RoomModel.findOneAndUpdate({roomid : roomid}, {
+            $push : { joinUser : {
+                userid : userInfo._id,          // 用户id
+                username : userInfo.username,   // 下注用户的用户名
+                teamid : teamid,                // 下注的队伍id
+                score : score,                  // 下注的分数
+            }}
+        }, function(err, result) {
+            if(err) {
+                reject(err);
+            } else {
+                resolve(result[0]);
+            }
+        } )
+    });
+}
 
 module.exports = RoomModel;

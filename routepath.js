@@ -55,7 +55,7 @@ module.exports = {
     GetBallGameList : {                     // 取得球赛列表
         path : '/user/game/list',
         parameters : {
-            token : { type : Number },      // 登陆状态
+            token : { type : String },      // 登陆状态
         },
         returns : {
             state : { type : Number },
@@ -64,7 +64,7 @@ module.exports = {
     CreateRoom : {                          // 创建一个房间
         path : '/user/room/create',
         parameters : {
-            token : { type : Number },      // 登陆状态
+            token : { type : String },      // 登陆状态
             ballgameid : { type : Number }, // 比赛id
         },
         returns : {
@@ -78,10 +78,19 @@ module.exports = {
     GetParticipateRoom : {                  // 取得参与的房间
         path : '/user/participate/room',
         parameters : {
-            token : { type : Number },      // 登陆状态
+            token : { type : String },      // 登陆状态
         },
         returns : {
-
+            state : {type : Number},
+            roomcount : {type : Number},    // 已经参数的房间数量列表
+            rooms : {
+                type : Array, 
+                obj : {
+                    roomid : {type : Number},
+                    roomname : {type : String},
+                    createtime : {type : String}
+                }
+            }
         }
     },
     GetMacauslotBallGameList : {            // 取得球赛列表
@@ -90,16 +99,61 @@ module.exports = {
             token : {type : String}
         },
         returns : {
+            state : {type : Number},
+            games : {type : Array,
+                obj : {
 
+                }
+            }
         }
     },
-    AddRoom : {
-        path : '/user/addroom',             // 加入房间
+    JoinRoom : {
+        path : '/user/joinroom',             // 加入房间
+        parameters : {
+            token : {type : String},
+            roomid : {type : Number},        // 房间id
+            score : {type : Number},         // 参与积分
+            team : {type : String},          // 参与队伍id
+        },
+        returns : {
+            state : {type : Number},
+        }
+    },
+    SplitScore : {
+        path : '/user/splitscore',          // 分配积分
         parameters : {
 
         },
         returns : {
+            state : {type : Number},
+        }
+    },
+    UseScore : {
+        path : '/user/usescore',            // 使用积分下注
+        parameters : {
+            token : {type : String},
+            
+        },
+        returns : {
+            state : {type : Number},
+        }
+    },
+    GetRoomInfo : {
+        path : '/user/getroominfo',         // 取得房间信息
+        parameters : {
 
+        },
+        returns : {
+            state : {type : Number},
+        }
+    },
+    testBallGame : {
+        path : '/user/ballgame/test',       // 使用测试数据更新球赛信息
+        parameters : {
+            
+        },
+        returns : {
+            state : {type : Number},
         }
     }
 };

@@ -23,7 +23,7 @@ class UserSession {
     }
 
     async updateToken(objectId, token) {
-
+        await userModel.updateToken(objectId, token);
     }
 
     async userLogin(username, password) {
@@ -33,12 +33,15 @@ class UserSession {
         }
         else {
             // 重置Token
-            result.Token = createNewToken();
-            await updateToken(result.ObjectID, result.Token);
+            result.token = this.createNewToken();
+            await this.updateToken(result.ObjectID, result.token);
             return result;
         }
     }
-
+    
+    async createUser(username, password, nickname) {
+        return await userModel.createNewUser(username, password, nickname);
+    }
     async userLoginWithToken(token) {
         if(/[0-9A-Fa-f]{16}/.test(token)) {
             return await userModel.findByToken(token);
@@ -47,8 +50,8 @@ class UserSession {
         }
     }
 
-    async createUser(username, password) {
-        
+    async addJoinRoomRecord(userid, roomid, team, score, gametime) {
+        return await userModel.addJoinRoomRecord(userid, roomid, team, score, gametime);
     }
 }
 

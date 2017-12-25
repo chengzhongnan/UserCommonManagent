@@ -58,7 +58,7 @@ const checkProtocalParameters = (path, queryObject) => {
 
 router.get(routerPath.Root.path, async(ctx, next) =>{
     const username = ctx.query.username;
-    const passwd = ctx.query.passwd;
+    const passwd = ctx.query.password;
     const token = ctx.query.token;
 
     // 检查协议参数

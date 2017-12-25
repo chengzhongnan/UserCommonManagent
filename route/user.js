@@ -19,7 +19,7 @@ router.get(routerPath.CreateUser.path, async(ctx) => {
         return;
     }
 
-    const createResult = await UserSession.CreateUser(ctx.query.username, 
+    const createResult = await (new UserSession()).createUser(ctx.query.username, 
         ctx.query.password, ctx.query.nickname);
     ctx.body = { state :  createResult };
 });
@@ -30,12 +30,11 @@ router.get(routerPath.Login.path, async(ctx) => {
         ctx.body = res; 
         return;
     }
-    const token = UserSession.createNewToken();
-    await UserSession.updateToken(ctx.userInfo.ObjectID, token);
+
     const res = { 
         status : false , 
         errcode : ErrCode.Success,
-        token : token  
+        token : ctx.userInfo.token  
     };
     ctx.body = res;
 });
