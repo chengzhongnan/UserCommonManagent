@@ -35,8 +35,12 @@ UserModel.findOnePromise = (cb) => {
             if(err) {
               reject(undefined);
             } else {
-                res[0].ObjectID = res[0]._id;
-                resolve(res[0]);
+                if (res[0] != null) {
+                    res[0].ObjectID = res[0]._id;
+                    resolve(res[0]);
+                } else {
+                    resolve(null);
+                }
             }
         });
     });
