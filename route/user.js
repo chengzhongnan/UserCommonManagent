@@ -21,20 +21,38 @@ router.get(routerPath.CreateUser.path, async(ctx) => {
 
     const createResult = await (new UserSession()).createUser(ctx.query.username, 
         ctx.query.password, ctx.query.nickname);
-    ctx.body = { state :  createResult };
+    ctx.body = createResult;
 });
 
 router.get(routerPath.Login.path, async(ctx) => {
     if(ctx.userInfo == null) {
-        const res = { status : false , errcode : ErrCode.UserNotLogin };
+        const res = { status : ErrCode.UserNotLogin };
         ctx.body = res; 
         return;
     }
 
     const res = { 
-        status : false , 
-        errcode : ErrCode.Success,
+        status : ErrCode.Success , 
         token : ctx.userInfo.token  
+    };
+    ctx.body = res;
+});
+
+router.get(routerPath.GetUserInfo.path, async(ctx) => {
+    if(ctx.userInfo == null) {
+        const res = { status : ErrCode.UserNotLogin };
+        ctx.body = res; 
+        return;
+    }
+
+    const res = {
+        state : ErrCode.Success,      // 登陆状态
+        nickname : ctx.userInfo.nickname,   // 昵称
+        money : ctx.userInfo.money,      // 拥有货币
+        headimage : ctx.userInfo.headimage,   // 图像
+        joinRecord : ctx.userInfo.joinRecord,
+        joinRoom : ctx.userInfo.joinRoom,
+        createRoom : ctx.userInfo.createRoom,
     };
     ctx.body = res;
 });
