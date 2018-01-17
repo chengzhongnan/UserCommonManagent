@@ -9,4 +9,9 @@ module.exports = ErrCode = {
     BallgameExpriesed : '比赛过期',
     CannotJoinGameRepeat : '不能重复加入同一个房间',
     GameRoomScoreLimit : '竞猜房间积分达到上限',
+    CreateRoomLimit : '创建房间数量达到上限',
+    NoRoom : '没有创建房间',
+    RoomScoreNotEnought : '房间积分不足',
+    AllocScoreFail : '分配积分失败',
+    CreateRoomTableFail : '创建比赛桌失败',
 };

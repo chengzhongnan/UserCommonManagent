@@ -20,7 +20,8 @@ class BallGameCache {
     
     constructor() {
         this.test();
-        setInterval(this.updateGameInfoTimer, 5 * 60 * 1000);
+        this.updateGameInfoTimer(this);
+        setInterval(this.updateGameInfoTimer, 5 * 60 * 1000, this);
     }
     
     async updateGameInfoByXML (odds, odds_config) {
@@ -40,7 +41,7 @@ class BallGameCache {
         return gameMap;
     }
 
-    async updateGameInfoTimer() {
+    async updateGameInfoTimer(owner) {
         try{
             const odds_config_XML = await Util.httpget('www.macauslot.com', 
             443, '/soccer/xml/odds/odds_config.xml', {nocache : 41653});
@@ -48,12 +49,17 @@ class BallGameCache {
             const odds_XML = await Util.httpget('www.macauslot.com', 
             443, '/soccer/xml/odds/odds.xml', {nocache : 41653});
             
-            updateGameInfoByXML(odds_XML, odds_config_XML);
+            owner.updateGameInfoByXML(odds_XML, odds_config_XML);
         } catch(e) {
             console.error(e);
         }
     }
 
+    /**
+     * 解析Macauslot的比赛数据
+     * @param {比赛数据文件} odds 
+     * @param {比赛配置文件} odds_config 
+     */
     parseMacauslotBallGameList (odds, odds_config) {
         let config = new Map();
         for(let i = 0 ; i < odds_config.Fixtures.Fixture.length ; i++) {

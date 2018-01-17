@@ -12,6 +12,7 @@
         "async-busboy": "^0.6.1",
         "babel-eslint": "^7.2.3",
         "bluebird": "^3.5.0",
+        "co-wechat-oauth": "^2.0.1",
         "eslint": "^4.3.0",
         "koa": "^2.3.0",
         "koa-bodyparser": "*",
@@ -22,6 +23,7 @@
         "koa-static": "^3.0.0",
         "mongodb": "^2.2.30",
         "mongoose": "*",
-        "xml2js" : "*"
+        "mysql": "^2.15.0",
+        "xml2js": "*"
     }
 }

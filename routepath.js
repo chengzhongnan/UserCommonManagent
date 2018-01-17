@@ -65,14 +65,11 @@ module.exports = {
         path : '/user/room/create',
         parameters : {
             token : { type : String },      // 登陆状态
-            ballgameid : { type : Number }, // 比赛id
         },
         returns : {
             state : { type : Number},
             roomid : { type : Number},      // 房间id
             createtime : {type : String},   // 创建时间
-            ballgameid : {type : Number},   // 比赛id
-            starttime : {type : String},    // 开始时间
         }
     },
     GetParticipateRoom : {                  // 取得参与的房间
@@ -107,37 +104,7 @@ module.exports = {
             }
         }
     },
-    JoinRoom : {
-        path : '/user/joinroom',             // 加入房间
-        parameters : {
-            token : {type : String},
-            roomid : {type : Number},        // 房间id
-            score : {type : Number},         // 参与积分
-            team : {type : String},          // 参与队伍id
-        },
-        returns : {
-            state : {type : Number},
-        }
-    },
-    SplitScore : {
-        path : '/user/splitscore',          // 分配积分
-        parameters : {
 
-        },
-        returns : {
-            state : {type : Number},
-        }
-    },
-    UseScore : {
-        path : '/user/usescore',            // 使用积分下注
-        parameters : {
-            token : {type : String},
-            
-        },
-        returns : {
-            state : {type : Number},
-        }
-    },
     GetRoomInfo : {
         path : '/user/getroominfo',         // 取得房间信息
         parameters : {
@@ -154,6 +121,59 @@ module.exports = {
         },
         returns : {
             state : {type : Number},
+        }
+    },
+    getWeixinWebLoginUrl : {
+        path : '/get/weixin/weburl',
+        parameters : {},
+        returns : {
+            state : {type : String},
+            url : {type : String},
+        }
+    },
+    allocScore : {                          // 分配积分
+        path : '/user/alloc/score',
+        parameters : {
+            token : {type : String},
+            playerid : {type : String},
+            score : {type : Number},
+        },
+        returns : {
+            state : {type : String},
+            roomScore : {type : Number},
+            playerScore : {type : Number},
+        }
+    },
+    createTable : {                         // 创建桌子
+        path : '/user/create/table',
+        parameters : {
+            token : {type : String},
+            gameid : {type : String},
+        },
+        returns : {
+            state : {type : String},
+            tableid : {type : Number},
+        }
+    },
+    betGame : {
+        path : '/user/bet',                 // 下注
+        parameters : {
+            token : {type : String},        
+            tableid : {type : Number},      // 桌子id
+            score : {type : Number},        // 下注积分
+            team : {type : String},         // 下注队伍
+        },
+        returns : {
+            state : {type : String},
+        }
+    },
+    anysdkCallback : {                      // AnySDK回调
+        path : '/anysdk/login',
+        parameters : {
+
+        },
+        returns : {
+
         }
     }
 };

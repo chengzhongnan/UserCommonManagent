@@ -10,3 +10,5 @@ require('./route/checksession');
 require('./route/user');
 require('./route/getMacauslotBallGameList');
 require('./route/room');
+require('./route/weixin');
+require('./route/anysdk');

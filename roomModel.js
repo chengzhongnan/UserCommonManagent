@@ -14,18 +14,28 @@ const RoomModelSchema = new Schema({
     createtime: Date,                   // 房间创建时间
     createUserName : String,            // 房间创建者
     createUserId :Schema.Types.ObjectId,// 创建者Id 
-    gameid : Number,                    // 游戏id
-    gameStartTime: Date,                // 游戏开始时间
+    password : String,                  // 房间密码
     roomMaxIndex: {                     // 最大房间索引
         type: Number,
         default : 10000,    
-    },               
-    joinUser: [{
+    },  
+    games : [{
+        gameid : Number,                    // 游戏id
+        gameStartTime: Date,                // 游戏开始时间
+        createTime : Date,                  // 创建时间
+        isSettlement : Boolean,             // 是否结算
+        joinUser: [{
+            userid : Schema.Types.ObjectId, // 用户id
+            username : String,              // 下注用户的用户名
+            teamid : String,                // 下注的队伍id
+            score : Number,                 // 下注的分数
+        }],  // 参与的玩家ObjectID
+    }],
+    totalScore : Number,            // 房间总积分
+    roomPlayers : [{                // 参与的玩家
         userid : Schema.Types.ObjectId, // 用户id
-        username : String,              // 下注用户的用户名
-        teamid : String,                // 下注的队伍id
-        score : Number,                 // 下注的分数
-    }],  // 参与的玩家ObjectID
+        score : Number,                 // 用户拥有的积分
+    }]
 });
 
 const RoomModel = mongoose.model('room', RoomModelSchema, 'room');
@@ -36,7 +46,11 @@ RoomModel.findOnePromise = (cb) => {
             if(err) {
               reject(undefined);
             } else {
-                resolve(res[0]);
+                if(res != null) {
+                    resolve(res[0]);
+                } else {
+                    resolve(null);
+                }
             }
         });
     });
@@ -48,64 +62,76 @@ RoomModel.findByRoomID = (roomid) => {
     }); 
 };
 
-RoomModel.incrementRoomId = () => {
+RoomModel.updatePromise = (cb, doc) => {
     return new Promise((resolve, reject) => {
-        RoomModel.findOneAndUpdate({
-            roomid : 0
-        },{
-            $inc : {roomMaxIndex : 1} 
-        },async (err, result) => {
-            if (err) 
-            {
-                reject(0);
-            }
-            else
-            {
-                if(result == null) {
-                    let startRoomIndex = 10000;
-                    
-                    let indexModel = new RoomModel({roomid : 0, roomMaxIndex : startRoomIndex});
-                    await RoomModel.insertMany(indexModel);
-                    resolve(startRoomIndex);
-                } else {
-                    resolve(result.roomMaxIndex + 1);
-                }
-            }
+        RoomModel.find(cb, doc, (err, res) => {
+            if(err) {
+                reject(undefined);
+              } else {
+                  resolve(res);
+              }
         });
     });
 }
 
-RoomModel.createRoom = async (gameinfo, userInfo) => {
-    let result = {state : ErrCode.Success, newRoom : null };
-    if(gameinfo == null || gameinfo.gameid == 0) {
-        result.state = ErrCode.ParametersError;
-        return result;
-    }
-    const newRoomId = await RoomModel.incrementRoomId();
-    let model = new RoomModel({
-        roomid : newRoomId,
-        id : newRoomId,
-        createtime : new Date(),
-        createUserName : userInfo.username,
-        createUserId : userInfo.id,
-        gameid : gameinfo.id,
-        gameStartTime : gameinfo.gt,
-        joinUser : []
-    });
+// RoomModel.incrementRoomId = () => {
+//     return new Promise((resolve, reject) => {
+//         RoomModel.findOneAndUpdate({
+//             roomid : 0
+//         },{
+//             $inc : {roomMaxIndex : 1} 
+//         },async (err, result) => {
+//             if (err) 
+//             {
+//                 reject(0);
+//             }
+//             else
+//             {
+//                 if(result == null) {
+//                     let startRoomIndex = 10000;
+                    
+//                     let indexModel = new RoomModel({roomid : 0, roomMaxIndex : startRoomIndex});
+//                     await RoomModel.insertMany(indexModel);
+//                     resolve(startRoomIndex);
+//                 } else {
+//                     resolve(result.roomMaxIndex + 1);
+//                 }
+//             }
+//         });
+//     });
+// }
 
-    const createResult = await RoomModel.insertMany(model);
-    if (createResult == null) {
-        result.state = ErrCode.DatabaseError;
-        return result;
-    }
+// RoomModel.createRoom = async (gameinfo, userInfo) => {
+//     let result = {state : ErrCode.Success, newRoom : null };
+//     if(gameinfo == null || gameinfo.gameid == 0) {
+//         result.state = ErrCode.ParametersError;
+//         return result;
+//     }
+//     const newRoomId = await RoomModel.incrementRoomId();
+//     let model = new RoomModel({
+//         roomid : newRoomId,
+//         id : newRoomId,
+//         createtime : new Date(),
+//         createUserName : userInfo.username,
+//         createUserId : userInfo.id,
+//         gameid : gameinfo.id,
+//         gameStartTime : gameinfo.gt,
+//         joinUser : []
+//     });
 
-    result.newRoom = createResult[0];
-    return result;
-};
+//     const createResult = await RoomModel.insertMany(model);
+//     if (createResult == null) {
+//         result.state = ErrCode.DatabaseError;
+//         return result;
+//     }
 
-RoomModel.getRoomInfo = (roomid) => {
-    return RoomModel.findByRoomID(roomid);
-};
+//     result.newRoom = createResult[0];
+//     return result;
+// };
+
+// RoomModel.getRoomInfo = (roomid) => {
+//     return RoomModel.findByRoomID(roomid);
+// };
 
 // 玩家加入房间竞猜列表
 RoomModel.AddJoinUser = async (roomid, userInfo, score, teamid) => {
@@ -126,5 +152,7 @@ RoomModel.AddJoinUser = async (roomid, userInfo, score, teamid) => {
         } )
     });
 }
+
+
 
 module.exports = RoomModel;
