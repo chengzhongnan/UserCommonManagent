@@ -6,7 +6,7 @@ const fs = require('fs');
 const Busboy = require('async-busboy');
 const ObjectID = require('mongodb').ObjectID;
 
-const UserSession = require('../usersession');
+const userSession = require('../usersession');
 const routerPath = require('../routepath');
 const ErrCode = require('../errcode');
 
@@ -19,7 +19,7 @@ router.get(routerPath.CreateUser.path, async(ctx) => {
         return;
     }
 
-    const createResult = await (new UserSession()).createUser(ctx.query.username, 
+    const createResult = await userSession.createUser(ctx.query.username, 
         ctx.query.password, ctx.query.nickname);
     ctx.body = createResult;
 });

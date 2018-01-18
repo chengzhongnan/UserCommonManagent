@@ -9,7 +9,7 @@ const fs = require('fs');
 const Busboy = require('async-busboy');
 const ObjectID = require('mongodb').ObjectID;
 
-const UserSession = require('../usersession');
+const userSession = require('../usersession');
 const routerPath = require('../routepath');
 const ErrCode = require('../errcode');
 const staticStrings = require('../static');
@@ -68,12 +68,11 @@ router.get(routerPath.Root.path, async(ctx, next) =>{
         return;
     }
 
-    const user = new UserSession();
     let userInfo;
     if(passwd == null) {
-        userInfo = await user.userLoginWithToken(token);
+        userInfo = await userSession.userLoginWithToken(token);
     } else {
-        userInfo = await user.userLogin(username, passwd);
+        userInfo = await userSession.userLogin(username, passwd);
     }
 
     if (userInfo == null) {           

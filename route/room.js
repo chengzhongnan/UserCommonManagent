@@ -6,7 +6,7 @@ const fs = require('fs');
 const Busboy = require('async-busboy');
 const ObjectID = require('mongodb').ObjectID;
 
-const UserSession = require('../usersession');
+const userSession = require('../usersession');
 const routerPath = require('../routepath');
 const ErrCode = require('../errcode');
 const ballGame = require('../ballgame');
@@ -156,8 +156,11 @@ router.get(routerPath.createTable.path, async(ctx) => {
         return;
     }
 
+    const gtSplitReg = /(\d{4})(\d{2})(\d{2})\s*(\d{1,2})\:(\d{1,2})/;
+    const stimeSplit = gtSplitReg.exec(gameinfo.gt);
+    const gamestarttime = new Date(stimeSplit[1],stimeSplit[2],stimeSplit[3],stimeSplit[4],stimeSplit[5],0);
     // 创建桌子
-    const tableid = await roomMysql.createTable(roomInfo.roomid, 'macauslot', gameinfo.id, gameinfo.gt);
+    const tableid = await roomMysql.createTable(roomInfo.roomid, 'macauslot', gameinfo.id, gamestarttime/1000 );
     if (tableid == -1) {
         createResult.state = ErrCode.CreateRoomTableFail;
         ctx.body = createResult;

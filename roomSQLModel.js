@@ -42,6 +42,20 @@ class RoomMysqlModel {
         }
     }
 
+    async getTable(tableid) {
+        const sql = `select gamesource, gameid, stime, calcstatus from roomtable where tableid = ${tableid}`;
+        const res = await mysqlConn.queryAsync(sql);
+        if (res.res.length >= 1) {
+            return res.res[0];
+        } else {
+            return null;
+        }
+    }
+
+    async getPlayerScore(roomid, playerid) {
+        const sql = `select score from score where roomid = ${roomid} and `
+    }
+
     /**
      * 获取房间信息
      * @param {创建者id} ownerid 
@@ -82,10 +96,14 @@ class RoomMysqlModel {
      * @returns {创建的桌子id}
      */
     async createTable(roomid, gamesrc, gameid, starttime) {
-        const sql = `insert into table  
-                (totalscore, roomscore, createtime, ownerid, ownername) values 
-                (${totalScore}, ${totalScore}, ${Date.now() / 1000 >> 0}, 
-                '${ownerid}', '${(new Buffer(ownerName)).toString('base64')}')`;
+        const findTableSql = `select tableid from roomtable where roomid = ${roomid} and gameid = ${gameid}`;
+        const findTable = await mysqlConn.queryAsync(findTableSql);
+        if (findTable.res.length > 0) {
+            return findTable.res[0];
+        }
+        const sql = `insert into roomtable  
+                (roomid, gamesource, gameid, stime, calcStatus) values 
+                (${roomid}, '${gamesrc}', ${gameid}, ${starttime}, 0)`;
         const res = await mysqlConn.queryAsync(sql);
         return res.res.insertId;
     }
@@ -100,7 +118,9 @@ class RoomMysqlModel {
      * @param {下注队伍} teamid 
      */
     async betGameTable(roomid, tableid, playerid, rate, betScore, teamid) {
+        const roomInfo = await this.getRoom(roomid);
 
+        const playerScoreSql = `select `
     }
 }
 

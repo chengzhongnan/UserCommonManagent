@@ -24,7 +24,23 @@ const UserModelSchema = new Schema({
         team : String,          // 竞猜队伍
         score : Number,         // 竞猜分数
         gametime : String,      // 球赛开启时间
-    }]
+    }],
+    weixin : {
+        access_token : String,
+        expires_in : Number,
+        refresh_token : String,
+        openid : String,
+        scope : String,
+        unionid : String,
+        nickname : String,
+        sex : Number,
+        language : String,
+        city : String,
+        province : String,
+        country : String,
+        headimgurl : String,
+        unionid : String,
+    }
 });
 
 const UserModel = mongoose.model('user', UserModelSchema, 'user');
@@ -33,16 +49,31 @@ UserModel.findOnePromise = (cb) => {
     return new Promise((resolve, reject) => {
         UserModel.find(cb, (err, res) => {
             if(err) {
-              reject(undefined);
+              reject(null);
             } else {
                 if (res[0] != null) {
-                    res[0].ObjectID = res[0]._id;
                     resolve(res[0]);
                 } else {
                     resolve(null);
                 }
             }
         });
+    });
+}
+
+UserModel.findOneAndUpdatePromise = async (cb, doc) => {
+    return new Promise ((resolve, reject) => {
+        UserModel.findOneAndUpdate(cb, doc, {new: true}, (err, res) => {
+            if (err) {
+                reject (null);
+            } else {
+                if(res == null) {
+                    resolve(null);
+                } else {
+                    resolve(res);
+                }
+            }
+        })
     });
 }
 
@@ -121,7 +152,7 @@ UserModel.createNewUser = async (username, passwd, nickname) => {
         username : username, 
         passwd : passwd, 
         nickname : nickname,
-        money : 100,
+        money : 0,
     });
     const createResult = await UserModel.insertMany(newUser);
     if (createResult == null) {
