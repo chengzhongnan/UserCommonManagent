@@ -120,7 +120,24 @@ class RoomMysqlModel {
     async betGameTable(roomid, tableid, playerid, rate, betScore, teamid) {
         const roomInfo = await this.getRoom(roomid);
 
-        const playerScoreSql = `select `
+        const playerScoreSql = `select score from score where roomid = ${roomid} and playerid = '${playerid}'`;
+        const playerScore = await mysqlConn.queryAsync(playerScoreSql);
+
+        if (playerScore < betScore) {
+            return false;
+        }
+
+        const gameStateSql = `select calcstate from roomtable where tableid = ${tableid}`;
+        const gameState = await mysqlConn.queryAsync(gameStateSql);
+
+        if (gameState != 0) {
+            return false;
+        }
+
+        const insertBetSql = `insert into bet (roomid, tableid, playerid, rate, usescore, ctime, teamid) 
+                            values (${roomid}, ${tableid}, '${playerid}', ${rate}, ${betScore}, ${Date.now()/1000>>0}, ${teamid})`;
+        await mysqlConn.queryAsync(insertBetSql);
+        return true;
     }
 
     /**

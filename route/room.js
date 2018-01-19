@@ -172,13 +172,40 @@ router.get(routerPath.createTable.path, async(ctx) => {
 });
 
 router.get(routerPath.betGame.path, async(ctx) => {
-    
+    let betResult = {state : ErrCode.Success};
+    const roomid = parseInt(ctx.query.roomid);
+    const tableid = parseInt(ctx.query.tableid);
+    const score = parseInt(ctx.query.score);
+
+    const table = roomMysql.getTable(tableid);
+    if (table == null) {
+        betResult.state = ErrCode.ParametersError;
+        ctx.body = betResult;
+        return;
+    }
+
+    const gameData = ballGame.getMacauslotBallGame(table.gameid);
+    if (gameData == null) {
+        betResult.state = ErrCode.ParametersError;
+        ctx.body = betResult;
+        return;
+    }
+
+    let res = await roomMysql.betGameTable(roomid, tableid, ctx.userInfo._id, gameData.wh, score, ctx.query.teamid);
+    if (!res) {
+        betResult.state = ErrCode.ParametersError;
+    }
+
+    ctx.body = betResult;
 });
 
 router.get(routerPath.UserEnterRoom.path, async(ctx) => {
     const roomid = parseInt(ctx.query.roomid);
     const roomData = roomMysql.getRoomPlayers(roomid);
-    ctx.body = roomData;
+    ctx.body = {
+        state : ErrCode.Success,
+        data : roomData,
+    };
 });
 
 router.get(routerPath.GetRoomPlayer.path, async(ctx) => {

@@ -28,7 +28,7 @@ CREATE TABLE `bet`  (
   `rate` float NULL DEFAULT NULL COMMENT '赔率',
   `useScore` int(11) NULL DEFAULT NULL COMMENT '下注积分',
   `ctime` int(11) NULL DEFAULT NULL COMMENT '下注时间',
-  `teamid` int(11) NULL DEFAULT NULL COMMENT '下注队伍'
+  `teamid` varchar(255) NULL DEFAULT NULL COMMENT '下注队伍'
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -59,8 +59,8 @@ CREATE TABLE `score` (
 -- ----------------------------
 -- Table structure for table
 -- ----------------------------
-DROP TABLE IF EXISTS `table`;
-CREATE TABLE `table`  (
+DROP TABLE IF EXISTS `roomtable`;
+CREATE TABLE `roomtable`  (
   `tableid` int(11) NOT NULL AUTO_INCREMENT,
   `roomid` int(11) NULL DEFAULT NULL COMMENT '房间id',
   `gamesource` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '游戏来源',

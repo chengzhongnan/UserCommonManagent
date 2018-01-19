@@ -159,6 +159,7 @@ module.exports = {
         path : '/user/bet',                 // 下注
         parameters : {
             token : {type : String},        
+            roomid : {type : Number},
             tableid : {type : Number},      // 桌子id
             score : {type : Number},        // 下注积分
             team : {type : String},         // 下注队伍
