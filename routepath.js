@@ -170,10 +170,33 @@ module.exports = {
     anysdkCallback : {                      // AnySDK回调
         path : '/anysdk/login',
         parameters : {
-
         },
         returns : {
-
+        }
+    },
+    GetRoomPlayer : {                           // 取得房间用户
+        path : '/user/get/roomplayer',
+        parameters : {
+            token : {type : String},
+            roomid : {type : Number},
+        },
+        returns : {
+            state : {type : String},
+            data : [{
+                userid : {type : String},       // 玩家ID
+                nickname : {type : String},     // 玩家昵称
+                score : {type : Number},        // 玩家分数
+            }]
+        }
+    },
+    UserEnterRoom : {                           // 用户进入房间
+        path : '/user/enter/room',              
+        parameters : {
+            token : {type : String},
+            roomid : {type : Number},
+        },
+        returns : {
+            state : {type : String}
         }
     }
 };

@@ -122,6 +122,31 @@ class RoomMysqlModel {
 
         const playerScoreSql = `select `
     }
+
+    /**
+     * 取得房间所有玩家
+     * @param {房间id} roomid 
+     */
+    async getRoomPlayers(roomid) {
+        const sql = `select playerid, score, nickname from score where roomid = ${roomid}`;
+        const res = await mysqlConn.queryAsync(sql);
+        return res;
+    }
+
+    /**
+     * 玩家进入房间
+     * @param {房间id} roomid 
+     * @param {玩家id} playerid 
+     * @param {玩家昵称} nickname 
+     */
+    async playerEnterRoom(roomid, playerid, nickname) {
+        const findPlayerSql = `select count(1) from score where roomid = ${roomid} and playerid = '${playerid}'`;
+        const res = await mysqlConn.queryAsync(findPlayerSql);
+        if (res == 0) {
+            const insertPlayerSql = `insert into score (roomid, playerid, score, nickname) values (${roomid}, '${playerid}', 0, '${nickname}')`;
+            await mysqlConn.queryAsync(insertPlayerSql);
+        }
+    }
 }
 
 const ins = new RoomMysqlModel();

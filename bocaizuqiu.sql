@@ -48,12 +48,13 @@ CREATE TABLE `room`  (
 -- ----------------------------
 -- Table structure for score
 -- ----------------------------
-DROP TABLE IF EXISTS `score`;
-CREATE TABLE `score`  (
+CREATE TABLE `score` (
   `roomid` int(11) NOT NULL COMMENT '房间id',
-  `playerid` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '玩家id',
-  `score` int(11) NULL DEFAULT NULL COMMENT '积分'
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
+  `playerid` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT '玩家id',
+  `score` int(11) DEFAULT NULL COMMENT '积分',
+  `nickname` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT '玩家昵称'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin ROW_FORMAT=DYNAMIC;
+
 
 -- ----------------------------
 -- Table structure for table

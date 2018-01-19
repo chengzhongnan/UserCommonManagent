@@ -14,4 +14,5 @@ module.exports = ErrCode = {
     RoomScoreNotEnought : '房间积分不足',
     AllocScoreFail : '分配积分失败',
     CreateRoomTableFail : '创建比赛桌失败',
+    RoomInvalid : '房间无效',
 };

@@ -170,3 +170,27 @@ router.get(routerPath.createTable.path, async(ctx) => {
     createResult.tableid = tableid;
     ctx.body = createResult;
 });
+
+router.get(routerPath.betGame.path, async(ctx) => {
+    
+});
+
+router.get(routerPath.UserEnterRoom.path, async(ctx) => {
+    const roomid = parseInt(ctx.query.roomid);
+    const roomData = roomMysql.getRoomPlayers(roomid);
+    ctx.body = roomData;
+});
+
+router.get(routerPath.GetRoomPlayer.path, async(ctx) => {
+    let enterResult = { state : ErrCode.Success };
+    const roomid = parseInt(ctx.query.roomid);
+    const roominfo = roomMysql.getRoom(roomid);
+    if (roominfo == null) {
+        enterResult.state = ErrCode.RoomInvalid;
+        ctx.body = enterResult;
+        return;
+    }
+
+    await roomMysql.playerEnterRoom(roomid, ctx.userInfo._id, ctx.userInfo.nickname);
+    ctx.body = enterResult;
+});
