@@ -32,7 +32,7 @@ class UserSession {
 
     async findOneAndUpdatePromise(cb, doc) {
         return new Promise ((resolve, reject) => {
-            UserModel.findOneAndUpdate(cb, doc, {new: true}, (err, res) => {
+            userModel.findOneAndUpdate(cb, doc, {new: true}, (err, res) => {
                 if (err) {
                     reject (null);
                 } else {
@@ -72,7 +72,7 @@ class UserSession {
             result.state = ErrCode.UserNameRepeated;
             return result;
         }
-        const newUser = new UserModel({
+        const newUser = new userModel({
             username: username,
             passwd: passwd,
             nickname: nickname,
@@ -100,7 +100,7 @@ class UserSession {
 
     async addJoinRoomRecord(userid, roomid, team, score, gametime) {
         return new Promise((resolve, reject) => {
-            UserModel.findByIdAndUpdate(userid, {
+            userModel.findByIdAndUpdate(userid, {
                 $push: {
                     joinRecord: {
                         date: new Date(),      // 参与时间
