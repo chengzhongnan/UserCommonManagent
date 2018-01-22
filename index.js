@@ -6,6 +6,7 @@ const path = require('path');
 const staticPath = require('koa-static');
 const bodyParser = require('koa-bodyparser');
 const setting = require('./setting');
+const cors = require('koa2-cors');
 
 const app = new Koa();
 
@@ -18,8 +19,10 @@ const app = new Koa();
 //     })
 // }));
 
+app.use(cors());
 app.use(router.routes()).use(router.allowedMethods());
+
 
 // app.use(staticPath('./public'));
 
-app.listen(3000);
+app.listen(3001);

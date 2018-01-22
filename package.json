@@ -21,6 +21,7 @@
         "koa-session-store": "*",
         "koa-session2": "*",
         "koa-static": "^3.0.0",
+        "koa2-cors": "^2.0.5",
         "mongodb": "^2.2.30",
         "mongoose": "*",
         "mysql": "^2.15.0",

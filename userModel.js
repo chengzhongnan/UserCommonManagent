@@ -45,143 +45,111 @@ const UserModelSchema = new Schema({
 
 const UserModel = mongoose.model('user', UserModelSchema, 'user');
 
-UserModel.findOnePromise = (cb) => {
-    return new Promise((resolve, reject) => {
-        UserModel.find(cb, (err, res) => {
-            if(err) {
-              reject(null);
-            } else {
-                if (res[0] != null) {
-                    resolve(res[0]);
-                } else {
-                    resolve(null);
-                }
-            }
-        });
-    });
-}
+// UserModel.findByUserName = (userName, passWD) => {
+//     return UserModel.findOnePromise({ 
+//         username: userName,
+//         passwd: passWD 
+//     }); 
+//     // new Promise((resolve, reject) => {
+//     //     UserModel.find({ 
+//     //         username: userName,
+//     //         passwd: passWD 
+//     //     }, (err, res) => {
+//     //         if(err) {
+//     //           reject(undefined);
+//     //         } else {
+//     //             resolve(res[0]);
+//     //         }
+//     //     });
+//     // });
+// };
 
-UserModel.findOneAndUpdatePromise = async (cb, doc) => {
-    return new Promise ((resolve, reject) => {
-        UserModel.findOneAndUpdate(cb, doc, {new: true}, (err, res) => {
-            if (err) {
-                reject (null);
-            } else {
-                if(res == null) {
-                    resolve(null);
-                } else {
-                    resolve(res);
-                }
-            }
-        })
-    });
-}
+// UserModel.findByToken = (token) => {
+//     return UserModel.findOnePromise({ 
+//         token: token
+//     });
+//     //  new Promise((resolve, reject) => {
+//     //     UserModel.find({ 
+//     //         token: token
+//     //     }, (err, res) => {
+//     //         if(err) {
+//     //           reject(undefined);
+//     //         } else {
+//     //             resolve(res[0]);
+//     //         }
+//     //     });
+//     // });
+// };
 
-UserModel.findByUserName = (userName, passWD) => {
-    return UserModel.findOnePromise({ 
-        username: userName,
-        passwd: passWD 
-    }); 
-    // new Promise((resolve, reject) => {
-    //     UserModel.find({ 
-    //         username: userName,
-    //         passwd: passWD 
-    //     }, (err, res) => {
-    //         if(err) {
-    //           reject(undefined);
-    //         } else {
-    //             resolve(res[0]);
-    //         }
-    //     });
-    // });
-};
+// UserModel.updateToken = (id, newToken) => {
+//     return new Promise((resolve, reject) => {
+//         UserModel.findByIdAndUpdate(id, {
+//             token : newToken   
+//         }, (err, result) => {
+//             if(err) {
+//                 reject(err);
+//             } else {
+//                 resolve(result);
+//             }
+//         })
+//     });
+// }
 
-UserModel.findByToken = (token) => {
-    return UserModel.findOnePromise({ 
-        token: token
-    });
-    //  new Promise((resolve, reject) => {
-    //     UserModel.find({ 
-    //         token: token
-    //     }, (err, res) => {
-    //         if(err) {
-    //           reject(undefined);
-    //         } else {
-    //             resolve(res[0]);
-    //         }
-    //     });
-    // });
-};
+// UserModel.updateThirdToken = (id, newToken) => {
+//     return new Promise((resolve, reject) => {
+//         UserModel.findByIdAndUpdate(id, {
+//             token : newToken   
+//         }, (err, result) => {
+//             if(err) {
+//                 reject(err);
+//             } else {
+//                 resolve(result);
+//             }
+//         })
+//     });
+// }
 
-UserModel.updateToken = (id, newToken) => {
-    return new Promise((resolve, reject) => {
-        UserModel.findByIdAndUpdate(id, {
-            token : newToken   
-        }, (err, result) => {
-            if(err) {
-                reject(err);
-            } else {
-                resolve(result);
-            }
-        })
-    });
-}
+// UserModel.createNewUser = async (username, passwd, nickname) => {
+//     let result = {state : ErrCode.Success, newUser : null };
+//     const findUser = await UserModel.findOnePromise({username : username});
+//     if (findUser != null) {
+//         result.state = ErrCode.UserNameRepeated;
+//         return result;
+//     }
+//     const newUser = new UserModel({
+//         username : username, 
+//         passwd : passwd, 
+//         nickname : nickname,
+//         money : 0,
+//     });
+//     const createResult = await UserModel.insertMany(newUser);
+//     if (createResult == null) {
+//         result.state = ErrCode.DatabaseError;
+//         return result;
+//     }
 
-UserModel.updateThirdToken = (id, newToken) => {
-    return new Promise((resolve, reject) => {
-        UserModel.findByIdAndUpdate(id, {
-            token : newToken   
-        }, (err, result) => {
-            if(err) {
-                reject(err);
-            } else {
-                resolve(result);
-            }
-        })
-    });
-}
+//     result.newUser = createResult[0];
+//     return result;
+// };
 
-UserModel.createNewUser = async (username, passwd, nickname) => {
-    let result = {state : ErrCode.Success, newUser : null };
-    const findUser = await UserModel.findOnePromise({username : username});
-    if (findUser != null) {
-        result.state = ErrCode.UserNameRepeated;
-        return result;
-    }
-    const newUser = new UserModel({
-        username : username, 
-        passwd : passwd, 
-        nickname : nickname,
-        money : 0,
-    });
-    const createResult = await UserModel.insertMany(newUser);
-    if (createResult == null) {
-        result.state = ErrCode.DatabaseError;
-        return result;
-    }
-
-    result.newUser = createResult[0];
-    return result;
-};
-
-UserModel.addJoinRoomRecord = async (userid, roomid, team, score, gamestarttime) => {
-    return new Promise((resolve, reject) => {
-        UserModel.findByIdAndUpdate(userid, {
-            $push : {joinRecord : {
-                date : new Date(),      // 参与时间
-                roomid : roomid,        // 房间id
-                team : team,            // 竞猜队伍
-                score : score,          // 竞猜分数
-                gametime : gametime,    // 球赛时间
-            }}
-        }, function(err, result) {
-            if(err) {
-                reject(err);
-            } else {
-                resolve(result[0]);
-            }
-        } )
-    });
-};
+// UserModel.addJoinRoomRecord = async (userid, roomid, team, score, gamestarttime) => {
+//     return new Promise((resolve, reject) => {
+//         UserModel.findByIdAndUpdate(userid, {
+//             $push : {joinRecord : {
+//                 date : new Date(),      // 参与时间
+//                 roomid : roomid,        // 房间id
+//                 team : team,            // 竞猜队伍
+//                 score : score,          // 竞猜分数
+//                 gametime : gametime,    // 球赛时间
+//             }}
+//         }, function(err, result) {
+//             if(err) {
+//                 reject(err);
+//             } else {
+//                 resolve(result[0]);
+//             }
+//         } )
+//     });
+// };
 
 module.exports = UserModel;

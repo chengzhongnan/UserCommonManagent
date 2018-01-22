@@ -14,6 +14,38 @@ const userModel = require('./userModel');
  */
 class UserSession {
 
+    async findOnePromise(cb) {
+        return new Promise((resolve, reject) => {
+            userModel.find(cb, (err, res) => {
+                if(err) {
+                  reject(null);
+                } else {
+                    if (res[0] != null) {
+                        resolve(res[0]);
+                    } else {
+                        resolve(null);
+                    }
+                }
+            });
+        });
+    }
+
+    async findOneAndUpdatePromise(cb, doc) {
+        return new Promise ((resolve, reject) => {
+            UserModel.findOneAndUpdate(cb, doc, {new: true}, (err, res) => {
+                if (err) {
+                    reject (null);
+                } else {
+                    if(res == null) {
+                        resolve(null);
+                    } else {
+                        resolve(res);
+                    }
+                }
+            })
+        });
+    }
+
     createNewToken() {
         var newToken = '';
         for (var i = 0; i < 16; i++) {
@@ -22,36 +54,70 @@ class UserSession {
         return newToken;
     }
 
-    async updateToken(objectId, token) {
-        await userModel.updateToken(objectId, token);
-    }
-
     async userLogin(username, password) {
-        var result = await userModel.findByUserName(username, password);
-        if (result == undefined) {
-            return null;
-        }
-        else {
-            // 重置Token
-            result.token = this.createNewToken();
-            await this.updateToken(result.ObjectID, result.token);
-            return result;
-        }
+        const newToken = this.createNewToken();
+        const result = await this.findOneAndUpdatePromise({
+            username : username,
+            passwd : password,
+        }, {
+            $set : { token : newToken }
+        });
+        return result;
     }
 
     async createUser(username, password, nickname) {
-        return await userModel.createNewUser(username, password, nickname);
+        let result = { state: ErrCode.Success, newUser: null };
+        const findUser = await this.findOnePromise({ username: username });
+        if (findUser != null) {
+            result.state = ErrCode.UserNameRepeated;
+            return result;
+        }
+        const newUser = new UserModel({
+            username: username,
+            passwd: passwd,
+            nickname: nickname,
+            money: 0,
+        });
+        const createResult = await userModel.insertMany(newUser);
+        if (createResult == null) {
+            result.state = ErrCode.DatabaseError;
+            return result;
+        }
+
+        result.newUser = createResult[0];
+        return result;
     }
+
     async userLoginWithToken(token) {
         if (/[0-9A-Fa-f]{16}/.test(token)) {
-            return await userModel.findByToken(token);
+            return await this.findOnePromise({ 
+                token: token
+            });
         } else {
             return null;
         }
     }
 
     async addJoinRoomRecord(userid, roomid, team, score, gametime) {
-        return await userModel.addJoinRoomRecord(userid, roomid, team, score, gametime);
+        return new Promise((resolve, reject) => {
+            UserModel.findByIdAndUpdate(userid, {
+                $push: {
+                    joinRecord: {
+                        date: new Date(),      // 参与时间
+                        roomid: roomid,        // 房间id
+                        team: team,            // 竞猜队伍
+                        score: score,          // 竞猜分数
+                        gametime: gametime,    // 球赛时间
+                    }
+                }
+            }, function (err, result) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(result[0]);
+                }
+            })
+        });
     }
 
     async findUserByWeixinOpenid(openid, access_token, refresh_token, headimgurl) {

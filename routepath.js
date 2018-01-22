@@ -12,7 +12,7 @@ module.exports = {
             nickname : { type : String } // 昵称
         },
         returns : {
-            state : { type : Number },
+            state : { type : String },
         }
     },
     Login : {
@@ -22,7 +22,7 @@ module.exports = {
             password : { type : String }
         },
         returns : {
-            state : { type : Number },      // 登陆状态
+            state : { type : String },      // 登陆状态
             token : { type : String },      // 成功后返回登陆token，其他返回空值
         }
     },
@@ -32,7 +32,7 @@ module.exports = {
             token : { type : String }
         },
         returns : {
-            state : { type : Number },      // 登陆状态
+            state : { type : String },      // 登陆状态
             nickname : { type : String },   // 昵称
             money : { type : Number },      // 拥有货币
             headimage : { type : String }   // 图像
@@ -47,7 +47,7 @@ module.exports = {
             img : { type : 'Stream' },
         },
         returns : {
-            state : { type : Number },      // 登陆状态
+            state : { type : String },      // 登陆状态
             headpic : { type : String }     // 上传成功后的pic 
         }
     },
@@ -58,7 +58,7 @@ module.exports = {
             token : { type : String },      // 登陆状态
         },
         returns : {
-            state : { type : Number },
+            state : { type : String },
         }
     },
     CreateRoom : {                          // 创建一个房间
@@ -67,7 +67,7 @@ module.exports = {
             token : { type : String },      // 登陆状态
         },
         returns : {
-            state : { type : Number},
+            state : { type : String},
             roomid : { type : Number},      // 房间id
             createtime : {type : String},   // 创建时间
         }
@@ -78,7 +78,7 @@ module.exports = {
             token : { type : String },      // 登陆状态
         },
         returns : {
-            state : {type : Number},
+            state : {type : String},
             roomcount : {type : Number},    // 已经参数的房间数量列表
             rooms : {
                 type : Array, 
@@ -96,7 +96,7 @@ module.exports = {
             token : {type : String}
         },
         returns : {
-            state : {type : Number},
+            state : {type : String},
             games : {type : Array,
                 obj : {
 
@@ -111,7 +111,7 @@ module.exports = {
 
         },
         returns : {
-            state : {type : Number},
+            state : {type : String},
         }
     },
     testBallGame : {
@@ -120,7 +120,7 @@ module.exports = {
             
         },
         returns : {
-            state : {type : Number},
+            state : {type : String},
         }
     },
     getWeixinWebLoginUrl : {

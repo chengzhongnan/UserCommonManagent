@@ -63,7 +63,7 @@ router.get(routerPath.Root.path, async(ctx, next) =>{
 
     // 检查协议参数
     if(!checkProtocalParameters(ctx.path, ctx.query)) {
-        const res = { status : false , errcode : ErrCode.ParametersError };
+        const res = { state : false , errcode : ErrCode.ParametersError };
         ctx.body = res;
         return;
     }
@@ -76,7 +76,7 @@ router.get(routerPath.Root.path, async(ctx, next) =>{
     }
 
     if (userInfo == null) {           
-        const res = { status : false , errcode : ErrCode.UserNotLogin };
+        const res = { state : false , errcode : ErrCode.UserNotLogin };
         ctx.body = res;
         return;
     }

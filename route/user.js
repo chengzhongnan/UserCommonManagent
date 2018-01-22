@@ -14,7 +14,7 @@ const ErrCode = require('../errcode');
 router.get(routerPath.CreateUser.path, async(ctx) => {
     
     if(ctx.query.username == null || ctx.query.password == null || ctx.query.nickname == null) {
-        const res = { status : false , errcode : ErrCode.UserNameInvalid };
+        const res = { state : false , errcode : ErrCode.UserNameInvalid };
         ctx.body = res; 
         return;
     }
@@ -26,13 +26,13 @@ router.get(routerPath.CreateUser.path, async(ctx) => {
 
 router.get(routerPath.Login.path, async(ctx) => {
     if(ctx.userInfo == null) {
-        const res = { status : ErrCode.UserNotLogin };
+        const res = { state : ErrCode.UserNotLogin };
         ctx.body = res; 
         return;
     }
 
     const res = { 
-        status : ErrCode.Success , 
+        state : ErrCode.Success , 
         token : ctx.userInfo.token  
     };
     ctx.body = res;
@@ -40,7 +40,7 @@ router.get(routerPath.Login.path, async(ctx) => {
 
 router.get(routerPath.GetUserInfo.path, async(ctx) => {
     if(ctx.userInfo == null) {
-        const res = { status : ErrCode.UserNotLogin };
+        const res = { state : ErrCode.UserNotLogin };
         ctx.body = res; 
         return;
     }
