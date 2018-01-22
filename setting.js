@@ -2,7 +2,7 @@
 
 module.exports = {
     mongo : {
-        url: 'mongodb://127.0.0.1:27017/UCMService',
+        url: 'mongodb://127.0.0.1:27017/UCMService_bc',
         host: '127.0.0.1',
         port: 27017,
         user: '',
