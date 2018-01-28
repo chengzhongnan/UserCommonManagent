@@ -13,6 +13,7 @@ const ballGame = require('../ballgame');
 const RoomModel = require('../roomModel');
 const setting = require('../setting');
 const roomMysql = require('../roomSQLModel');
+const Util = require('../util');
 
 // 创建竞猜房间
 // router.get(routerPath.CreateRoom.path , async (ctx) => {
@@ -222,3 +223,30 @@ router.get(routerPath.GetRoomPlayer.path, async(ctx) => {
     await roomMysql.playerEnterRoom(roomid, ctx.userInfo._id, ctx.userInfo.nickname);
     ctx.body = enterResult;
 });
+
+router.get(routerPath.GetParticipateRoom.path, async (ctx) => {
+    const rooms = await roomMysql.getUserParticipateRooms(ctx.userInfo._id);
+    ctx.body = {
+        state : ErrCode.Success,
+        roomcount : rooms.length,
+        rooms : rooms
+    };
+});
+
+router.get(routerPath.GetBallGameList.path, async(ctx) => {
+    const odds_config_XML = await Util.httpget('www.macauslot.com', 
+    443, '/soccer/xml/odds/odds_config.xml', {nocache : 41653});
+
+    const odds_config = await Util.parseXML(odds_config_XML);
+        
+    const odds_XML = await Util.httpget('www.macauslot.com', 
+    443, '/soccer/xml/odds/odds.xml', {nocache : 41653});
+
+    const odds = await Util.parseXML(odds_XML);
+
+    const ballGameList = ballGame.parseMacauslotBallGameList(odds, odds_config);
+    ctx.body = {
+        state : ErrCode.Success,
+        data : ballGameList
+    };
+})

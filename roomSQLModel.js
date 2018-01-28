@@ -1,3 +1,5 @@
+import { retry } from '../../../Users/ch/AppData/Local/Microsoft/TypeScript/2.6/node_modules/@types/async';
+
 'use strict';
 
 const mysqlConn = require('./mysqlConnect');
@@ -165,6 +167,28 @@ class RoomMysqlModel {
             const insertPlayerSql = `insert into score (roomid, playerid, score, nickname) values (${roomid}, '${playerid}', 0, '${nickname}')`;
             await mysqlConn.queryAsync(insertPlayerSql);
         }
+    }
+
+    async getUserParticipateRooms(playerid) {
+        const sql = `select roomid, score from score where playerid = '${playerid}'`;
+        const res = await mysqlConn.queryAsync(sql);
+        
+        const sqlRoom = `select roomid, roomname, roomdesc, ownername from room where roomid in 
+                        (select roomid from score where playerid = '${playerid}')`;
+
+        const roomRes = await mysqlConn.queryAsync(sqlRoom);
+        const roominfos = [];
+        for(var i = 0 ; i < roomRes.length ; i++) {
+            let roominfo = {
+                roomid : roomRes[i].roomid,
+                roomname : roomRes[i].roomname,
+                roomdese : roomRes[i].roomdesc,
+                roomowner : roomRes[i].ownername,
+                score : res[i].score,
+            };
+            roominfos.push(roominfo);
+        }
+        return roominfos;
     }
 }
 

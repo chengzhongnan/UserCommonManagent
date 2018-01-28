@@ -17,8 +17,8 @@ module.exports = {
         secretKey :  '1f949417a558cb28799ad57455be9110',
     },
     mysql : {
-        host : '192.168.2.215',
-        port : 3307,
+        host : '127.0.0.1',
+        port : 3306,
         user : 'ucm',
         password : '123456',
         database : 'bocaizuqiu',

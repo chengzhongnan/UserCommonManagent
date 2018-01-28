@@ -35,17 +35,17 @@ CREATE TABLE `bet`  (
 -- Table structure for room
 -- ----------------------------
 DROP TABLE IF EXISTS `room`;
-CREATE TABLE `room`  (
+CREATE TABLE `room` (
   `roomid` int(11) NOT NULL AUTO_INCREMENT COMMENT '房间id',
-  `totalScore` int(11) NULL DEFAULT NULL COMMENT '总积分',
-  `roomScore` int(11) NULL DEFAULT NULL COMMENT '房间剩余积分',
-  `createtime` int(11) NULL DEFAULT NULL COMMENT '创建时间',
-  `ownerid` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL COMMENT '创建者ID',
-  `ownername` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '创建者昵称',
-  `roomname`  varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '房间名称',
-  `roomdesc`  varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '房间描述'
-  PRIMARY KEY (`roomid`, `ownerid`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
+  `totalScore` int(11) DEFAULT NULL COMMENT '总积分',
+  `roomScore` int(11) DEFAULT NULL COMMENT '房间剩余积分',
+  `createtime` int(11) DEFAULT NULL COMMENT '创建时间',
+  `ownerid` varchar(255) COLLATE utf8_bin NOT NULL COMMENT '创建者ID',
+  `ownername` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT '创建者昵称',
+  `roomname` varchar(255) COLLATE utf8_bin NOT NULL,
+  `roomdesc` varchar(255) COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`roomid`,`ownerid`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_bin ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Table structure for score
