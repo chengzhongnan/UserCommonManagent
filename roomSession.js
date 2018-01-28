@@ -44,7 +44,7 @@ class RoomSession {
      * @param {玩家信息} userInfo 
      * 创建成功返回房间的db数据
      */
-    async createRoom(userInfo) {
+    async createRoom(userInfo, roomName, roomDescribe) {
         let result = {state : ErrCode.Success, newRoom : null };
         
         const newRoomId = await this.incrementRoomId();
@@ -57,7 +57,9 @@ class RoomSession {
             password : '',
             games : [],
             totalScore : setting.gamesetting.maxroomscore,
-            roomPlayers : []
+            roomPlayers : [],
+            roomName : roomName,
+            roomDescribe : roomDescribe,
         });
 
         const createResult = await RoomModel.insertMany(model);

@@ -11,7 +11,7 @@ class RoomMysqlModel {
      * @param {初始积分} totalScore 
      * @returns {创建好的房间id，-1表示创建失败}
      */
-    async createRoom(ownerid, ownerName, totalScore) {
+    async createRoom(ownerid, ownerName, totalScore, roomName, roomDescribe) {
         // 每人仅仅允许创建一个房间
         const findSql = `select count(1) from room where ownerid = '${ownerid}'`;
         const findRes = await mysqlConn.queryAsync(findSql);
@@ -21,9 +21,11 @@ class RoomMysqlModel {
 
         // 插入到数据库中
         const sql = `insert into room  
-                (totalscore, roomscore, createtime, ownerid, ownername) values 
+                (totalscore, roomscore, createtime, ownerid, ownername, roomname, roomdesc) values 
                 (${totalScore}, ${totalScore}, ${Date.now() / 1000 >> 0}, 
-                '${ownerid}', '${(new Buffer(ownerName)).toString('base64')}')`;
+                '${ownerid}', '${(new Buffer(ownerName)).toString('base64')}', 
+                '${(new Buffer(roomName)).toString('base64')}', 
+                '${(new Buffer(roomDescribe)).toString('base64')}')`;
         const res = await mysqlConn.queryAsync(sql);
         return res.res.insertId;
     }

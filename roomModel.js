@@ -13,6 +13,8 @@ const RoomModelSchema = new Schema({
     roomid: Number,                     // 房间id  
     createtime: Date,                   // 房间创建时间
     createUserName : String,            // 房间创建者
+    roomName : String,                  // 房间名字
+    roomDescribe : String,              // 房间描述
     createUserId :Schema.Types.ObjectId,// 创建者Id 
     password : String,                  // 房间密码
     roomMaxIndex: {                     // 最大房间索引

@@ -97,7 +97,8 @@ const roomMysql = require('../roomSQLModel');
 router.get(routerPath.CreateRoom.path , async (ctx) => {
     let createResult = { state : ErrCode.Success };
 
-    const newRoomid = await roomMysql.createRoom(ctx.userInfo._id, ctx.userInfo.username, 10000);
+    const newRoomid = await roomMysql.createRoom(ctx.userInfo._id, ctx.userInfo.username, 
+        10000, ctx.query.roomname, ctx.query.roomdesc);
     if (newRoomid == -1) {
         createResult.state = ErrCode.CreateRoomLimit;
         ctx.body = createResult;

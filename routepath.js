@@ -65,6 +65,8 @@ module.exports = {
         path : '/user/room/create',
         parameters : {
             token : { type : String },      // 登陆状态
+            roomname : {type : String},
+            roomdesc : {type : String},
         },
         returns : {
             state : { type : String},
