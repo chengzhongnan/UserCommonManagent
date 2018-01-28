@@ -42,6 +42,8 @@ CREATE TABLE `room`  (
   `createtime` int(11) NULL DEFAULT NULL COMMENT '创建时间',
   `ownerid` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL COMMENT '创建者ID',
   `ownername` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '创建者昵称',
+  `roomname`  varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '房间名称',
+  `roomdesc`  varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL COMMENT '房间描述'
   PRIMARY KEY (`roomid`, `ownerid`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
 
