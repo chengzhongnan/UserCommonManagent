@@ -1,5 +1,3 @@
-import { retry } from '../../../Users/ch/AppData/Local/Microsoft/TypeScript/2.6/node_modules/@types/async';
-
 'use strict';
 
 const mysqlConn = require('./mysqlConnect');
