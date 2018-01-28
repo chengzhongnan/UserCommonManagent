@@ -110,12 +110,43 @@ module.exports = {
     GetRoomInfo : {
         path : '/user/getroominfo',         // 取得房间信息
         parameters : {
-
+            token : {type : String},
+            roomid : {type : Number},
         },
         returns : {
             state : {type : String},
+            room : {
+
+            }
         }
     },
+
+    getAllRoomPages : {                     // 取得房间页数
+        path : '/get/room/pages',
+        parameters : {
+            token : {type : String},
+        },
+        returns : {
+            state : {type : String},
+            pagecount : {type : Number},
+        }
+    },
+
+    getPageRoom : {                         // 取得某个页数区间内的房间，（最大区间不能超过3个）
+        path : '/user/page/room',
+        parameters : {
+            token : {type : String},
+            pagestart : {type : Number},
+            pageend : {type : Number},
+        },
+        returns : {
+            state : {type : String},
+            rooms : [{
+
+            }],
+        }
+    },
+
     testBallGame : {
         path : '/user/ballgame/test',       // 使用测试数据更新球赛信息
         parameters : {
